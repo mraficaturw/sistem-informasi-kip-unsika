@@ -5,7 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang">
+
+    {{-- SEO: Deskripsi halaman (dapat di-override per halaman via @section('description')) --}}
+    <meta name="description" content="@yield('description', 'Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang (KIP UNSIKA) — berita, tracking pencairan, dan form pendataan KIP-K.')">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- SEO: Open Graph (preview saat dibagikan ke sosmed/WA) --}}
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="KIP UNSIKA">
+    <meta property="og:title"       content="@yield('title', 'KIP UNSIKA') — Pusat Informasi KIP Kuliah">
+    <meta property="og:description" content="@yield('description', 'Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang — berita, tracking pencairan, dan form pendataan KIP-K.')">
+    <meta property="og:url"         content="{{ url()->current() }}">
+
     <title>@yield('title', 'KIP UNSIKA') — Pusat Informasi KIP Kuliah</title>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">

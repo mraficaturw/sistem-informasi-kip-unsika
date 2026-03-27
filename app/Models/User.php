@@ -36,22 +36,26 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'    => 'datetime',
+            'password'             => 'hashed',
             'khs_next_resubmit_at' => 'datetime',
         ];
     }
 
+    // ─── Akses Panel Filament ───────────────────────────────────
+
     /**
-     * Determine if the user can access the Filament admin panel.
+     * Hanya user dengan role admin yang boleh mengakses panel Filament.
      */
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role === 'admin';
     }
 
+    // ─── Helper Role & Status ───────────────────────────────────
+
     /**
-     * Check if the user account is approved.
+     * Periksa apakah akun mahasiswa sudah disetujui admin.
      */
     public function isApproved(): bool
     {
@@ -59,7 +63,7 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Check if the user is an admin.
+     * Periksa apakah user adalah admin.
      */
     public function isAdmin(): bool
     {
@@ -67,20 +71,35 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Check if the user is a student.
+     * Periksa apakah user adalah mahasiswa.
      */
     public function isStudent(): bool
     {
         return $this->role === 'student';
     }
 
-    // ─── Relationships ─────────────────────────────────────────
+    /**
+     * Periksa apakah mahasiswa sedang dalam masa tunggu (cooldown) pengisian ulang KHS.
+     * Cooldown diterapkan setelah pengajuan KHS ditolak beberapa kali.
+     */
+    public function isInKhsCooldown(): bool
+    {
+        return $this->khs_next_resubmit_at !== null && now()->lessThan($this->khs_next_resubmit_at);
+    }
 
+    // ─── Relationships ──────────────────────────────────────────
+
+    /**
+     * Mahasiswa dapat memiliki banyak pengajuan KHS.
+     */
     public function khsSubmissions(): HasMany
     {
         return $this->hasMany(KhsSubmission::class);
     }
 
+    /**
+     * Admin dapat membuat banyak pengumuman/berita.
+     */
     public function announcements(): HasMany
     {
         return $this->hasMany(Announcement::class, 'created_by');

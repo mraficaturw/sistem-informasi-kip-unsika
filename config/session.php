@@ -47,7 +47,9 @@ return [
     |
     */
 
-    'encrypt' => env('SESSION_ENCRYPT', false),
+    // Enkripsi data session di storage (direkomendasikan untuk produksi).
+    // Setelah diaktifkan, semua sesi lama akan invalid → pengguna login ulang.
+    'encrypt' => env('SESSION_ENCRYPT', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +171,10 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    // Kirim cookie sesi HANYA melalui HTTPS.
+    // Di development biarkan false; di production wajib true.
+    // Atur via: SESSION_SECURE_COOKIE=true di .env production.
+    'secure' => env('SESSION_SECURE_COOKIE', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -199,7 +204,11 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    // Kontrol perilaku cookie saat request lintas-situs (anti-CSRF).
+    // 'strict' → paling aman; cookie tidak dikirim jika klik dari link eksternal (email/WA).
+    // 'lax'    → lebih fleksibel; cookie dikirim saat navigasi tingkat atas.
+    // 'none'   → tidak ada pembatasan (tidak disarankan tanpa Secure=true).
+    'same_site' => env('SESSION_SAME_SITE', 'strict'),
 
     /*
     |--------------------------------------------------------------------------

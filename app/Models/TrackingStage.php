@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class TrackingStage extends Model
 {
@@ -21,14 +22,18 @@ class TrackingStage extends Model
     protected function casts(): array
     {
         return [
-            'date' => 'date',
+            'date'       => 'date',
             'sort_order' => 'integer',
         ];
     }
 
-    // ─── Scopes ────────────────────────────────────────────────
+    // ─── Scopes ─────────────────────────────────────────────────
 
-    public function scopeOrdered($query)
+    /**
+     * Urutkan tahap tracking berdasarkan sort_order secara ascending.
+     * Scope ini memastikan urutan tampil sesuai urutan yang ditentukan admin.
+     */
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order');
     }

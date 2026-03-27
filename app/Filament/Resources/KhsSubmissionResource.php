@@ -25,10 +25,20 @@ class KhsSubmissionResource extends Resource
     protected static string|null $pluralModelLabel = 'Pendataan KHS';
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Gunakan eager loading relasi 'user' untuk menghindari N+1 query
+     * saat tabel menampilkan banyak baris dengan kolom user.name, user.faculty, dsb.
+     */
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with('user');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             SchemaComponents\Section::make('Detail KHS')->schema([
+                // Relasi ke mahasiswa, bisa dicari berdasarkan nama
                 FormComponents\Select::make('user_id')
                     ->label('Mahasiswa')
                     ->relationship('user', 'name')
@@ -50,11 +60,12 @@ class KhsSubmissionResource extends Resource
                 FormComponents\Select::make('status')
                     ->label('Status')
                     ->options([
-                        'pending' => 'Menunggu',
+                        'pending'  => 'Menunggu',
                         'verified' => 'Disetujui',
                         'rejected' => 'Ditolak',
                     ])
                     ->required(),
+                // Kolom catatan diisi admin jika menolak pengajuan
                 FormComponents\Textarea::make('admin_notes')
                     ->label('Catatan / Alasan Penolakan')
                     ->columnSpanFull(),
@@ -92,13 +103,13 @@ class KhsSubmissionResource extends Resource
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'verified',
-                        'danger' => 'rejected',
+                        'danger'  => 'rejected',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'Menunggu',
+                        'pending'  => 'Menunggu',
                         'verified' => 'Disetujui',
                         'rejected' => 'Ditolak',
-                        default => $state,
+                        default    => $state,
                     }),
                 Tables\Columns\TextColumn::make('form_period')
                     ->label('Periode')
@@ -112,17 +123,20 @@ class KhsSubmissionResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'pending' => 'Menunggu',
+                        'pending'  => 'Menunggu',
                         'verified' => 'Disetujui',
                         'rejected' => 'Ditolak',
                     ]),
             ])
             ->recordActions([
+                // Tombol untuk membuka file PDF KHS di tab baru
                 Actions\Action::make('viewFile')
                     ->label('Lihat KHS')
                     ->icon('heroicon-o-eye')
                     ->url(fn (KhsSubmission $record) => asset('storage/' . $record->khs_file))
                     ->openUrlInNewTab(),
+
+                // Tombol setujui: hanya tampil jika status masih pending
                 Actions\Action::make('verify')
                     ->label('Setujui')
                     ->icon('heroicon-o-check-circle')
@@ -130,39 +144,49 @@ class KhsSubmissionResource extends Resource
                     ->visible(fn (KhsSubmission $record) => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->action(function (KhsSubmission $record) {
+                        // Ubah status KHS menjadi verified
                         $record->update(['status' => 'verified']);
+
+                        // Reset counter penolakan dan cooldown mahasiswa setelah disetujui
                         $record->user()->update([
-                            'khs_rejection_count' => 0,
+                            'khs_rejection_count'  => 0,
                             'khs_next_resubmit_at' => null,
                         ]);
+
                         Notification::make()->title('KHS disetujui.')->success()->send();
                     }),
+
+                // Tombol tolak: hanya tampil jika status masih pending
                 Actions\Action::make('reject')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->visible(fn (KhsSubmission $record) => $record->status === 'pending')
                     ->form([
-                        FormComponents\Textarea::make('admin_notes')->label('Alasan Penolakan')->required(),
+                        // Admin wajib mengisi alasan penolakan
+                        FormComponents\Textarea::make('admin_notes')
+                            ->label('Alasan Penolakan')
+                            ->required(),
                     ])
                     ->action(function (KhsSubmission $record, array $data) {
+                        // Simpan status ditolak beserta catatan alasan dari admin
                         $record->update([
-                            'status' => 'rejected',
+                            'status'      => 'rejected',
                             'admin_notes' => $data['admin_notes'],
                         ]);
 
-                        $user = $record->user;
-                        
-                        // Assign a flat 15-minute wait time for any rejection
-                        $delay = now()->addMinutes(15);
-                        
-                        $user->update(['khs_next_resubmit_at' => $delay]);
+                        // Terapkan cooldown 15 menit agar mahasiswa tidak langsung resubmit
+                        $record->user->update([
+                            'khs_next_resubmit_at' => now()->addMinutes(15),
+                        ]);
 
                         Notification::make()->title('KHS ditolak.')->warning()->send();
                     }),
+
                 Actions\EditAction::make(),
             ])
             ->headerActions([
+                // Ekspor data KHS yang disetujui ke format Excel
                 Actions\Action::make('exportApproved')
                     ->label('Export Disetujui (Excel)')
                     ->icon('heroicon-o-arrow-down-tray')
@@ -181,7 +205,7 @@ class KhsSubmissionResource extends Resource
     {
         return [
             'index' => Pages\ListKhsSubmissions::route('/'),
-            'edit' => Pages\EditKhsSubmission::route('/{record}/edit'),
+            'edit'  => Pages\EditKhsSubmission::route('/{record}/edit'),
         ];
     }
 }

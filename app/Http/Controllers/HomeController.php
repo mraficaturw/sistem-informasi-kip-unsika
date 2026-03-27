@@ -15,54 +15,60 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        // 1. Berita terbaru (10 for carousel)
+        // ── 1. Ambil setting dari DB satu kali (tiap key di-cache otomatis) ──
+        $formPendataanActive = Setting::get('form_pendataan_active', '0') === '1';
+        $currentFormPeriod   = Setting::get('form_pendataan_period', '');
+
+        // ── 2. Berita terbaru untuk carousel (maksimal 10) ─────────────────
         $announcements = Announcement::published()
             ->latest('publish_date')
             ->take(10)
             ->get();
 
-        // 2. Stats counter — approved students count
+        // ── 3. Jumlah mahasiswa yang sudah disetujui ───────────────────────
         $stats = [
             'totalStudents' => User::where('role', 'student')
                 ->where('status', 'approved')
                 ->count(),
         ];
 
-        // 3. Tracking stages (global admin-managed)
+        // ── 4. Tahap tracking pencairan dana ───────────────────────────────
         $trackingStages = TrackingStage::ordered()->get();
 
-        // 4. Form pendataan status
-        $formPendataanActive = Setting::get('form_pendataan_active', '0') === '1';
-
-        // Check if current user already submitted for this form period
+        // ── 5. Data khusus mahasiswa yang sedang login ─────────────────────
         $alreadySubmitted = false;
-        $resubmitAt = null;
-        $rejectedNotes = null;
-        $currentFormPeriod = Setting::get('form_pendataan_period', '');
-        
+        $resubmitAt       = null;
+        $rejectedNotes    = null;
+
         if (auth()->check() && auth()->user()->isStudent()) {
             $user = auth()->user();
-            $resubmitAt = $user->khs_next_resubmit_at;
-            
-            if ($formPendataanActive) {
-                $alreadySubmitted = KhsSubmission::where('user_id', $user->id)
-                    ->where('form_period', $currentFormPeriod)
-                    ->whereIn('status', ['pending', 'verified'])
-                    ->exists();
 
+            // Ambil data cooldown resubmit (jika pernah ditolak)
+            $resubmitAt = $user->khs_next_resubmit_at;
+
+            if ($formPendataanActive) {
+                // Satu query untuk mendapatkan pengajuan KHS pada periode ini
+                // Diurutkan terbaru, sehingga bisa dipakai untuk cek status & catatan
                 $currentPeriodKhs = KhsSubmission::where('user_id', $user->id)
-                    ->where('form_period', $currentFormPeriod)
+                    ->forPeriod($currentFormPeriod)
                     ->latest()
                     ->first();
-                
-                $rejectedNotes = $currentPeriodKhs && $currentPeriodKhs->status === 'rejected' ? $currentPeriodKhs->admin_notes : null;
+
+                // Mahasiswa dianggap sudah mengisi jika ada submission aktif (pending/verified)
+                $alreadySubmitted = $currentPeriodKhs
+                    && in_array($currentPeriodKhs->status, ['pending', 'verified']);
+
+                // Tampilkan catatan penolakan hanya jika status terakhir adalah rejected
+                $rejectedNotes = ($currentPeriodKhs && $currentPeriodKhs->status === 'rejected')
+                    ? $currentPeriodKhs->admin_notes
+                    : null;
             }
         }
 
-        // 5. Latest SK document
+        // ── 6. Dokumen SK terbaru ──────────────────────────────────────────
         $latestDocument = Document::latest()->first();
 
-        // 6. FAQ
+        // ── 7. FAQ aktif (maksimal 6) ──────────────────────────────────────
         $faqs = Faq::active()->take(6)->get();
 
         return view('home', compact(

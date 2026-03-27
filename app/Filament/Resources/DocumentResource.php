@@ -39,7 +39,7 @@ class DocumentResource extends Resource
                     ->disk('public')
                     ->directory('documents')
                     ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(10240),
+                    ->maxSize(2048),
             ]),
         ]);
     }

@@ -27,6 +27,10 @@ class StudentResource extends Resource
     protected static string|null $pluralModelLabel = 'Mahasiswa';
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Filter query agar resource ini hanya menampilkan user dengan role 'student',
+     * bukan admin. Ini mencegah admin muncul di tabel mahasiswa.
+     */
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->where('role', 'student');
@@ -62,10 +66,11 @@ class StudentResource extends Resource
                         FormComponents\TextInput::make('cohort')
                             ->label('Angkatan')
                             ->maxLength(4),
+                        // Dropdown status: menentukan apakah mahasiswa bisa login
                         FormComponents\Select::make('status')
                             ->label('Status')
                             ->options([
-                                'pending' => 'Menunggu Verifikasi',
+                                'pending'  => 'Menunggu Verifikasi',
                                 'approved' => 'Disetujui',
                                 'rejected' => 'Ditolak',
                             ])
@@ -105,13 +110,13 @@ class StudentResource extends Resource
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'approved',
-                        'danger' => 'rejected',
+                        'danger'  => 'rejected',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'Menunggu',
+                        'pending'  => 'Menunggu',
                         'approved' => 'Disetujui',
                         'rejected' => 'Ditolak',
-                        default => $state,
+                        default    => $state,
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Terdaftar')
@@ -123,15 +128,24 @@ class StudentResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'pending' => 'Menunggu Verifikasi',
+                        'pending'  => 'Menunggu Verifikasi',
                         'approved' => 'Disetujui',
                         'rejected' => 'Ditolak',
                     ]),
+                // Filter berdasarkan angkatan, opsi diambil dari data yang sudah ada di DB
                 Tables\Filters\SelectFilter::make('cohort')
                     ->label('Angkatan')
-                    ->options(fn () => User::where('role', 'student')->distinct()->pluck('cohort', 'cohort')->filter()->toArray()),
+                    ->options(
+                        fn () => User::where('role', 'student')
+                            ->distinct()
+                            ->orderBy('cohort')
+                            ->pluck('cohort', 'cohort')
+                            ->filter()
+                            ->toArray()
+                    ),
             ])
             ->recordActions([
+                // Tombol setujui: hanya tampil jika status belum approved
                 Actions\Action::make('approve')
                     ->label('Setujui')
                     ->icon('heroicon-o-check-circle')
@@ -141,13 +155,19 @@ class StudentResource extends Resource
                     ->modalHeading('Setujui Mahasiswa?')
                     ->modalDescription('Mahasiswa akan bisa login setelah disetujui.')
                     ->action(function (User $record) {
+                        // Ubah status menjadi approved dan kirim email notifikasi
                         $record->update(['status' => 'approved']);
+
+                        // Email dikirim via queue agar tidak memperlambat respons admin
                         Mail::to($record->email)->queue(new AccountApprovedMail($record));
+
                         Notification::make()
                             ->title('Mahasiswa berhasil disetujui.')
                             ->success()
                             ->send();
                     }),
+
+                // Tombol tolak: hanya tampil jika status belum rejected
                 Actions\Action::make('reject')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
@@ -162,6 +182,7 @@ class StudentResource extends Resource
                             ->warning()
                             ->send();
                     }),
+
                 Actions\EditAction::make(),
             ])
             ->toolbarActions([
@@ -175,9 +196,9 @@ class StudentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStudents::route('/'),
+            'index'  => Pages\ListStudents::route('/'),
             'create' => Pages\CreateStudent::route('/create'),
-            'edit' => Pages\EditStudent::route('/{record}/edit'),
+            'edit'   => Pages\EditStudent::route('/{record}/edit'),
         ];
     }
 }

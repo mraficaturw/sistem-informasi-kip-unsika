@@ -127,6 +127,17 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        // ── Channel khusus untuk mencatat aktivitas mencurigakan ──────────────
+        // Digunakan oleh SuspiciousActivityLogger middleware.
+        // File dirotasi harian dan disimpan selama 30 hari.
+        'security' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/security.log'),
+            'level'  => 'warning',
+            'days'   => 30,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];
