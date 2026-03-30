@@ -15,6 +15,11 @@ use App\Http\Controllers\Auth\RegisterController;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Preview halaman maintenance (untuk development — dapat dihapus di production)
+Route::get('/maintenance-preview', function () {
+    return view('maintenance');
+})->name('maintenance');
+
 Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
 

@@ -14,8 +14,9 @@ $dark: #1a1d2e;
 $body-bg: #ffffff;
 $body-color: #444444;
 
-$font-family-sans-serif: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-$headings-font-family: 'Raleway', 'Open Sans', sans-serif;
+// Mobile-first: Stack fonts with optimal fallbacks per OS/browser
+$font-family-sans-serif: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+$headings-font-family: 'Raleway', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 $headings-font-weight: 700;
 
 $border-radius: 0.5rem;
@@ -38,6 +39,31 @@ $navbar-padding-y: 1rem;
 // -----------------------------------------------
 // 4. Dewi-Style Custom Styles
 // -----------------------------------------------
+
+// === Cross-Browser Base Fixes ===
+html {
+    // Smooth scroll with prefers-reduced-motion respect
+    @media (prefers-reduced-motion: no-preference) {
+        scroll-behavior: smooth;
+    }
+    // Prevent font size inflation on orientation change (iOS Safari)
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    // Use dvh for mobile browsers that have dynamic toolbars
+    min-height: 100vh;
+    @supports (min-height: 100dvh) {
+        min-height: 100dvh;
+    }
+    // Prevent horizontal overflow on all mobile browsers
+    overflow-x: hidden;
+    // Better tap highlight on mobile
+    -webkit-tap-highlight-color: rgba($primary, 0.1);
+}
 
 // === Section title ===
 .section-label {
@@ -235,7 +261,37 @@ $navbar-padding-y: 1rem;
     }
 }
 
-@media (max-width: 768px) {
+// Mobile-first Hero responsive breakpoints
+// xs — mobile portrait (default styles above are mobile-first)
+// sm — larger phones
+@media (min-width: 480px) {
+    .hero-section .hero-title {
+        font-size: 2.75rem;
+    }
+}
+// md — tablets
+@media (min-width: 768px) {
+    // Already handled in .hero-section block above
+}
+// Override for very small screens
+@media (max-width: 479px) {
+    .hero-section {
+        .hero-title {
+            font-size: 1.75rem;
+        }
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        .hero-content {
+            padding: 1rem 0.75rem;
+        }
+        .btn-hero {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.875rem;
+        }
+    }
+}
+@media (max-width: 767px) {
     .hero-section .hero-title {
         font-size: 2.2rem;
     }
@@ -340,10 +396,16 @@ $navbar-padding-y: 1rem;
         color: $dark;
         margin-bottom: 0.75rem;
         line-height: 1.4;
+        // Cross-browser line clamp
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2; // Standard property
         -webkit-box-orient: vertical;
         overflow: hidden;
+        // Firefox fallback (no native support, use max-height)
+        @supports not (-webkit-line-clamp: 2) {
+            max-height: 2.9em;
+        }
     }
 
     .news-excerpt {
@@ -351,8 +413,12 @@ $navbar-padding-y: 1rem;
         color: #6c757d;
         display: -webkit-box;
         -webkit-line-clamp: 3;
+        line-clamp: 3; // Standard property
         -webkit-box-orient: vertical;
         overflow: hidden;
+        @supports not (-webkit-line-clamp: 3) {
+            max-height: 4.5em;
+        }
         margin-bottom: 1rem;
     }
 
@@ -402,13 +468,30 @@ $navbar-padding-y: 1rem;
 }
 
 .news-scroll-item {
-    min-width: 320px;
-    max-width: 350px;
+    // Mobile-first: full width on xs, fixed on larger
+    min-width: 260px;
+    max-width: 300px;
     scroll-snap-align: start;
+    -ms-flex-negative: 0;
     flex-shrink: 0;
-    // Flex agar height: 100% pada .news-card bekerja
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+
+    // Slightly wider on larger phones
+    @media (min-width: 480px) {
+        min-width: 300px;
+        max-width: 340px;
+    }
+    // Full desktop size
+    @media (min-width: 768px) {
+        min-width: 320px;
+        max-width: 350px;
+    }
 }
 
 .carousel-nav-btn {
@@ -641,15 +724,31 @@ $navbar-padding-y: 1rem;
 
 // === Form Pendataan ===
 .pendataan-section {
-    padding: 5rem 0;
+    padding: 3rem 0; // Mobile-first: smaller padding
+
+    @media (min-width: 768px) {
+        padding: 5rem 0;
+    }
+
     background: #fff;
 
     .pendataan-card {
         border: none;
         border-radius: 1rem;
+        background: -webkit-linear-gradient(315deg, $dark 0%, lighten($dark, 10%) 100%);
         background: linear-gradient(135deg, $dark 0%, lighten($dark, 10%) 100%);
         color: #fff;
-        padding: 3rem;
+        // Mobile-first: compact padding
+        padding: 1.5rem;
+
+        @media (min-width: 576px) {
+            padding: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            padding: 3rem;
+        }
+
         position: relative;
         overflow: hidden;
 
@@ -672,10 +771,15 @@ $navbar-padding-y: 1rem;
             background: $primary;
             border: none;
             color: #fff;
+            -webkit-transition: all 0.3s;
             transition: all 0.3s;
+            // Ensure touch target on mobile
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
 
             &:hover {
                 background: lighten($primary, 5%);
+                -webkit-transform: translateY(-2px);
                 transform: translateY(-2px);
                 box-shadow: 0 8px 25px rgba($primary, 0.35);
             }
@@ -683,6 +787,7 @@ $navbar-padding-y: 1rem;
             &:disabled {
                 background: #6c757d;
                 cursor: not-allowed;
+                -webkit-transform: none;
                 transform: none;
                 box-shadow: none;
             }
@@ -785,11 +890,16 @@ $navbar-padding-y: 1rem;
 .footer {
     background: $dark;
     color: #94a3b8;
-    padding: 4rem 0 0;
+    padding: 3rem 0 0; // Mobile-first: compact
+
+    @media (min-width: 768px) {
+        padding: 4rem 0 0;
+    }
 
     a {
         color: #94a3b8;
         text-decoration: none;
+        -webkit-transition: color 0.3s;
         transition: color 0.3s;
 
         &:hover {
@@ -886,24 +996,37 @@ $navbar-padding-y: 1rem;
 // === Back to Top ===
 .back-to-top {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 1.25rem;  // Mobile-first: closer to edge
+    right: 1.25rem;
     width: 44px;
     height: 44px;
     border-radius: 50%;
     background: $primary;
     color: #fff;
     border: none;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     font-size: 1.2rem;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
+    -webkit-transition: all 0.3s;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba($primary, 0.35);
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    @media (min-width: 768px) {
+        bottom: 2rem;
+        right: 2rem;
+    }
 
     &.visible {
         opacity: 1;
@@ -912,6 +1035,7 @@ $navbar-padding-y: 1rem;
 
     &:hover {
         background: darken($primary, 8%);
+        -webkit-transform: translateY(-3px);
         transform: translateY(-3px);
     }
 }
@@ -1042,18 +1166,21 @@ $navbar-padding-y: 1rem;
     }
 }
 
-// Text gradient
+// Text gradient — cross-browser compatible
 .text-gradient {
+    background: -webkit-linear-gradient(315deg, $primary, lighten($primary, 20%));
     background: linear-gradient(135deg, $primary, lighten($primary, 20%));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    // Fallback for browsers not supporting background-clip: text
+    @supports not (-webkit-background-clip: text) {
+        color: $primary;
+        background: none;
+    }
 }
 
-// Smooth scroll
-html {
-    scroll-behavior: smooth;
-}
+// Remove old duplicate scroll-behavior (now handled in html block above)
 
 // KHS Modal
 .modal-pendataan {

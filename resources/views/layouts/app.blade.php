@@ -2,13 +2,17 @@
 <html lang="id">
 
 <head>
+    {{-- Character encoding & compatibility --}}
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- SEO: Deskripsi halaman (dapat di-override per halaman via @section('description')) --}}
     <meta name="description" content="@yield('description', 'Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang (KIP UNSIKA) — berita, tracking pencairan, dan form pendataan KIP-K.')">
+    <meta name="keywords" content="KIP Kuliah, UNSIKA, beasiswa, KIP UNSIKA, Universitas Singaperbangsa Karawang, FORMADIKIP">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="FORMADIKIP UNSIKA">
     <link rel="canonical" href="{{ url()->current() }}">
 
     {{-- SEO: Open Graph (preview saat dibagikan ke sosmed/WA) --}}
@@ -17,13 +21,35 @@
     <meta property="og:title"       content="@yield('title', 'KIP UNSIKA') — Pusat Informasi KIP Kuliah">
     <meta property="og:description" content="@yield('description', 'Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang — berita, tracking pencairan, dan form pendataan KIP-K.')">
     <meta property="og:url"         content="{{ url()->current() }}">
+    <meta property="og:image"       content="{{ asset('images/og-image.png') }}">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt"    content="KIP UNSIKA — Pusat Informasi KIP Kuliah Universitas Singaperbangsa Karawang">
+    <meta property="og:locale"       content="id_ID">
+
+    {{-- Twitter / X Card --}}
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="@yield('title', 'KIP UNSIKA') — Pusat Informasi KIP Kuliah">
+    <meta name="twitter:description" content="@yield('description', 'Pusat Informasi Mahasiswa KIP Kuliah Universitas Singaperbangsa Karawang — berita, tracking pencairan, dan form pendataan KIP-K.')">
+    <meta name="twitter:image"       content="{{ asset('images/og-image.png') }}">
+
+    {{-- PWA / Mobile Browser --}}
+    <meta name="theme-color" content="#e84545">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="KIP UNSIKA">
+
+    {{-- Favicon & Icons --}}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/og-image.png') }}">
 
     <title>@yield('title', 'KIP UNSIKA') — Pusat Informasi KIP Kuliah</title>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Open+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     @stack('styles')
 </head>
@@ -31,13 +57,21 @@
 <body>
     {{-- Navbar --}}
     <nav class="navbar navbar-expand-lg navbar-dewi {{ request()->is('/') ? 'transparent' : 'scrolled' }} fixed-top"
-        id="mainNavbar">
+        id="mainNavbar"
+        role="navigation"
+        aria-label="Navigasi utama">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                <i class="bi bi-mortarboard-fill me-2 fs-4"></i>
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}" aria-label="KIP UNSIKA — Beranda">
+                <i class="bi bi-mortarboard-fill me-2 fs-4" aria-hidden="true"></i>
                 <span>KIP UNSIKA</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigasi">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
