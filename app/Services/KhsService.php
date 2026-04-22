@@ -62,8 +62,8 @@ class KhsService
      */
     public function store(int $userId, int $semester, float $ips, float $ipk, UploadedFile $file, string $period): KhsSubmission
     {
-        // Simpan file PDF ke storage/app/public/khs
-        $path = $file->store('khs', 'public');
+        // Simpan file PDF ke Supabase Storage bucket "KHS Mahasiswa"
+        $path = $file->store('khs', 'supabase');
 
         // Buat record baru; semua pengajuan masuk ke 'pending' untuk diverifikasi admin
         $submission = KhsSubmission::create([

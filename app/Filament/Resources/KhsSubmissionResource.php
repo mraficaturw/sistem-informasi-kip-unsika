@@ -146,7 +146,7 @@ class KhsSubmissionResource extends Resource
                 Actions\Action::make('viewFile')
                     ->label('Lihat KHS')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (KhsSubmission $record) => asset('storage/' . $record->khs_file))
+                    ->url(fn (KhsSubmission $record) => \Illuminate\Support\Facades\Storage::disk('supabase')->temporaryUrl($record->khs_file, now()->addMinutes(30)))
                     ->openUrlInNewTab(),
 
                 // Tombol setujui: hanya tampil jika status masih pending

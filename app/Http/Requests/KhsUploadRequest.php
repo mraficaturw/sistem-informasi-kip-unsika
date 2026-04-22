@@ -16,7 +16,7 @@ class KhsUploadRequest extends FormRequest
         return [
             'semester' => ['required', 'integer', 'min:1', 'max:14'],
             'ips' => ['required', 'numeric', 'min:0', 'max:4.00'],
-            'khs_file' => ['required', 'file', 'mimes:pdf', 'max:5120'], // 5MB
+            'khs_file' => ['required', 'file', 'mimes:pdf', 'max:2048'], // 2MB (sesuai limit bucket Supabase)
         ];
     }
 
@@ -33,7 +33,7 @@ class KhsUploadRequest extends FormRequest
             'ips.max' => 'IPS maksimal 4.00.',
             'khs_file.required' => 'File KHS wajib diupload.',
             'khs_file.mimes' => 'File KHS harus berformat PDF.',
-            'khs_file.max' => 'Ukuran file KHS maksimal 5MB.',
+            'khs_file.max' => 'Ukuran file KHS maksimal 2MB.',
         ];
     }
 }
