@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Login')
+@section('title', 'Lupa Password')
 @section('content')
 <div class="register-page">
     <div class="container py-5">
@@ -9,15 +9,15 @@
                     <div class="card-body p-4 p-md-5">
                         <div class="text-center mb-4">
                             <div class="register-icon mx-auto mb-3">
-                                <i class="bi bi-mortarboard-fill"></i>
+                                <i class="bi bi-key"></i>
                             </div>
-                            <h4 class="fw-bold">Login KIP UNSIKA</h4>
-                            <p class="text-muted small">Masuk ke akun Anda</p>
+                            <h4 class="fw-bold">Lupa Password</h4>
+                            <p class="text-muted small">Masukkan email Anda untuk menerima link reset password</p>
                         </div>
 
-                        @if(session('success'))
+                        @if(session('status'))
                             <div class="alert alert-success border-0">
-                                <i class="bi bi-check-circle me-1"></i>{{ session('success') }}
+                                <i class="bi bi-check-circle me-1"></i>{{ session('status') }}
                             </div>
                         @endif
 
@@ -29,7 +29,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('password.email') }}">
                             @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold">Email</label>
@@ -38,27 +38,13 @@
                                     <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="npm@student.unsika.ac.id">
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label fw-semibold">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan password">
-                                </div>
-                            </div>
-                            <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <div class="form-check mb-0">
-                                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                    <label class="form-check-label" for="remember">Ingat saya</label>
-                                </div>
-                                <a href="{{ route('password.request') }}" class="small text-danger text-decoration-none">Lupa Password?</a>
-                            </div>
                             <button type="submit" class="btn btn-danger w-100 py-2 fw-semibold">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <i class="bi bi-send me-2"></i>Kirim Link Reset
                             </button>
                         </form>
 
                         <div class="text-center mt-3">
-                            <p class="text-muted small">Belum punya akun? <a href="{{ route('register') }}" class="fw-semibold text-danger">Daftar di sini</a></p>
+                            <a href="{{ route('login') }}" class="text-muted small"><i class="bi bi-arrow-left me-1"></i>Kembali ke Login</a>
                         </div>
                     </div>
                 </div>

@@ -65,8 +65,8 @@ class HomeController extends Controller
             }
         }
 
-        // ── 6. Dokumen SK terbaru ──────────────────────────────────────────
-        $latestDocument = Document::latest()->first();
+        // ── 6. Dokumen SK per angkatan ─────────────────────────────────────
+        $skDocuments = Document::whereNotNull('angkatan')->orderBy('angkatan')->get();
 
         // ── 7. FAQ aktif (maksimal 6) ──────────────────────────────────────
         $faqs = Faq::active()->take(6)->get();
@@ -78,7 +78,7 @@ class HomeController extends Controller
             'formPendataanActive',
             'alreadySubmitted',
             'currentFormPeriod',
-            'latestDocument',
+            'skDocuments',
             'faqs',
             'resubmitAt',
             'rejectedNotes'

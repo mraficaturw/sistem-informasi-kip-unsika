@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         // ─── Approved Students ──────────────────────────────────
         $students = [
-            ['npm' => '2210631170086', 'name' => 'Ahmad Fauzan', 'email' => '2210631170086@student.unsika.ac.id', 'password' => '167519450846', 'faculty' => 'FASILKOM', 'study_program' => 'Informatika', 'cohort' => '2022'],
+            ['npm' => '2210631170086', 'name' => 'Rafi Catur', 'email' => '2210631170086@student.unsika.ac.id', 'password' => 'Raficatur2004', 'faculty' => 'FASILKOM', 'study_program' => 'Informatika', 'cohort' => '2022'],
             ['npm' => '2210631170001', 'name' => 'Siti Nurhaliza', 'email' => '2210631170001@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'FASILKOM', 'study_program' => 'Sistem Informasi', 'cohort' => '2022'],
             ['npm' => '2110631040012', 'name' => 'Budi Santoso', 'email' => '2110631040012@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Teknik', 'study_program' => 'Teknik Mesin', 'cohort' => '2021'],
             ['npm' => '2310631060023', 'name' => 'Dewi Lestari', 'email' => '2310631060023@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Ekonomi dan Bisnis', 'study_program' => 'Akuntansi', 'cohort' => '2023'],
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             ['npm' => '2210631010056', 'name' => 'Muhammad Arif', 'email' => '2210631010056@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Hukum', 'study_program' => 'Ilmu Hukum', 'cohort' => '2022'],
         ];
 
-        foreach ($students as $data) {
+        foreach ($students as $index => $data) {
             $student = User::create([
                 'npm' => $data['npm'],
                 'name' => $data['name'],
@@ -53,6 +53,8 @@ class DatabaseSeeder extends Seeder
                 'faculty' => $data['faculty'],
                 'study_program' => $data['study_program'],
                 'cohort' => $data['cohort'],
+                // Variasi consent: ganjil opt-in, genap opt-out (untuk testing)
+                'email_opt_in' => $index % 2 === 0,
             ]);
             $student->assignRole('student');
         }
@@ -109,11 +111,17 @@ class DatabaseSeeder extends Seeder
         Setting::set('form_pendataan_active', '1');
         Setting::set('form_pendataan_period', 'Genap 2025/2026');
 
-        // ─── Documents (SK) ─────────────────────────────────────
-        Document::create([
-            'name' => 'SK Penerima KIP Kuliah UNSIKA Semester Genap 2025/2026',
-            'file' => 'documents/sk-kip-genap-2025-2026.pdf',
-        ]);
+        // ─── Documents (SK per Angkatan) ────────────────────────
+        $skDocuments = [
+            ['name' => 'SK Penerima KIP Kuliah UNSIKA - Angkatan 2021', 'file' => 'documents/sk-kip-angkatan-2021.pdf', 'angkatan' => '2021'],
+            ['name' => 'SK Penerima KIP Kuliah UNSIKA - Angkatan 2022', 'file' => 'documents/sk-kip-angkatan-2022.pdf', 'angkatan' => '2022'],
+            ['name' => 'SK Penerima KIP Kuliah UNSIKA - Angkatan 2023', 'file' => 'documents/sk-kip-angkatan-2023.pdf', 'angkatan' => '2023'],
+            ['name' => 'SK Penerima KIP Kuliah UNSIKA - Angkatan 2024', 'file' => 'documents/sk-kip-angkatan-2024.pdf', 'angkatan' => '2024'],
+        ];
+
+        foreach ($skDocuments as $doc) {
+            Document::create($doc);
+        }
 
         // ─── FAQ ────────────────────────────────────────────────
         $faqs = [
@@ -136,6 +144,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $mainStudent->id,
                 'semester' => 5,
                 'ips' => 3.65,
+                'ipk' => 3.60,
                 'khs_file' => 'khs/sample-khs-5.pdf',
                 'status' => 'verified',
                 'form_period' => 'Ganjil 2025/2026',
@@ -145,6 +154,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $mainStudent->id,
                 'semester' => 6,
                 'ips' => 3.70,
+                'ipk' => 3.62,
                 'khs_file' => 'khs/sample-khs-6.pdf',
                 'status' => 'pending',
                 'form_period' => 'Genap 2025/2026',
@@ -158,6 +168,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $student2->id,
                 'semester' => 5,
                 'ips' => 3.45,
+                'ipk' => 3.40,
                 'khs_file' => 'khs/sample-khs-siti.pdf',
                 'status' => 'verified',
                 'form_period' => 'Ganjil 2025/2026',
@@ -171,11 +182,42 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $student3->id,
                 'semester' => 7,
                 'ips' => 3.20,
+                'ipk' => 2.85,
                 'khs_file' => 'khs/sample-khs-budi.pdf',
                 'status' => 'rejected',
                 'admin_notes' => 'File KHS tidak terbaca, harap upload ulang dengan file yang lebih jelas.',
                 'form_period' => 'Genap 2025/2026',
                 'submitted_at' => '2026-03-06 14:20:00',
+            ]);
+        }
+
+        // Dewi — IPK tinggi, disetujui (kondisi ideal)
+        $student4 = User::where('npm', '2310631060023')->first();
+        if ($student4) {
+            KhsSubmission::create([
+                'user_id' => $student4->id,
+                'semester' => 3,
+                'ips' => 3.80,
+                'ipk' => 3.75,
+                'khs_file' => 'khs/sample-khs-dewi.pdf',
+                'status' => 'verified',
+                'form_period' => 'Ganjil 2025/2026',
+                'submitted_at' => '2025-09-16 11:00:00',
+            ]);
+        }
+
+        // Rizky — IPS & IPK rendah, pending (kondisi warning)
+        $student5 = User::where('npm', '2310631020034')->first();
+        if ($student5) {
+            KhsSubmission::create([
+                'user_id' => $student5->id,
+                'semester' => 3,
+                'ips' => 2.90,
+                'ipk' => 2.95,
+                'khs_file' => 'khs/sample-khs-rizky.pdf',
+                'status' => 'pending',
+                'form_period' => 'Genap 2025/2026',
+                'submitted_at' => '2026-03-08 09:30:00',
             ]);
         }
     }

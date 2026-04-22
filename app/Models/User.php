@@ -24,6 +24,7 @@ class User extends Authenticatable implements FilamentUser
         'role',
         'status',
         'password',
+        'email_opt_in',
         'khs_rejection_count',
         'khs_next_resubmit_at',
     ];
@@ -38,6 +39,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at'    => 'datetime',
             'password'             => 'hashed',
+            'email_opt_in'         => 'boolean',
             'khs_next_resubmit_at' => 'datetime',
         ];
     }
@@ -85,6 +87,23 @@ class User extends Authenticatable implements FilamentUser
     public function isInKhsCooldown(): bool
     {
         return $this->khs_next_resubmit_at !== null && now()->lessThan($this->khs_next_resubmit_at);
+    }
+
+    /**
+     * Periksa apakah mahasiswa sudah menjawab modal consent email.
+     * null = belum dijawab, true/false = sudah dijawab.
+     */
+    public function hasRespondedEmailConsent(): bool
+    {
+        return $this->email_opt_in !== null;
+    }
+
+    /**
+     * Periksa apakah mahasiswa setuju menerima email notifikasi.
+     */
+    public function wantsEmail(): bool
+    {
+        return $this->email_opt_in === true;
     }
 
     // ─── Relationships ──────────────────────────────────────────

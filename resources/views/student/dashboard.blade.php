@@ -10,7 +10,7 @@
 <div class="container pb-5">
     {{-- Stats Cards --}}
     <div class="row g-4 mb-4">
-        <div class="col-md-4">
+        <div class="col-6 col-md-3">
             <div class="card border-start border-primary border-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-6 col-md-3">
             <div class="card border-start border-{{ explode(' ', $ipsAlertColor ?? 'success')[0] }} border-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -41,7 +41,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-6 col-md-3">
+            <div class="card border-start border-{{ explode(' ', $ipkAlertColor ?? 'success')[0] }} border-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">IPK Terakhir</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fw-bold mb-0">{{ $latestIpk }}</h3>
+                                @if(!empty($ipkAlertMessage))
+                                    <span class="badge bg-{{ $ipkAlertColor }}">{{ $ipkAlertMessage }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <i class="bi bi-bar-chart-line text-{{ explode(' ', $ipkAlertColor ?? 'success')[0] }} fs-2 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
             <div class="card border-start border-{{ explode(' ', $currentPeriodStatusColor)[0] }} border-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -92,6 +110,7 @@
                                     <th>Periode</th>
                                     <th>Semester</th>
                                     <th>IPS</th>
+                                    <th>IPK</th>
                                     <th>Tanggal Submit</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
@@ -104,6 +123,7 @@
                                     <td>{{ $khs->form_period ?: '-' }}</td>
                                     <td>{{ $khs->semester }}</td>
                                     <td>{{ number_format($khs->ips, 2) }}</td>
+                                    <td>{{ number_format($khs->ipk, 2) }}</td>
                                     <td>{{ $khs->submitted_at?->format('d M Y') ?? $khs->created_at->format('d M Y') }}</td>
                                     <td>
                                         @if($khs->status === 'verified')

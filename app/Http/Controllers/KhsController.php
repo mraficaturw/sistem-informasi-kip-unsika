@@ -46,12 +46,16 @@ class KhsController extends Controller
         $validated = $request->validate([
             'semester' => ['required', 'integer', 'min:1', 'max:14'],
             'ips'      => ['required', 'numeric', 'min:0', 'max:4.00'],
+            'ipk'      => ['required', 'numeric', 'min:0', 'max:4.00'],
             'khs_file' => ['required', 'file', 'mimes:pdf', 'max:2048'],
         ], [
             'semester.required' => 'Semester wajib dipilih.',
             'ips.required'      => 'IPS wajib diisi.',
             'ips.min'           => 'IPS minimal 0.00.',
             'ips.max'           => 'IPS maksimal 4.00.',
+            'ipk.required'      => 'IPK terakhir wajib diisi.',
+            'ipk.min'           => 'IPK minimal 0.00.',
+            'ipk.max'           => 'IPK maksimal 4.00.',
             'khs_file.required' => 'File KHS wajib diupload.',
             'khs_file.mimes'    => 'File harus berformat PDF.',
             'khs_file.max'      => 'Ukuran file maksimal 2MB.',
@@ -63,6 +67,7 @@ class KhsController extends Controller
             userId:   $user->id,
             semester: (int) $validated['semester'],
             ips:      (float) $validated['ips'],
+            ipk:      (float) $validated['ipk'],
             file:     $validated['khs_file'],
             period:   $currentPeriod,
         );

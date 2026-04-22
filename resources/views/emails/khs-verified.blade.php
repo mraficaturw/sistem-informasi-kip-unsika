@@ -8,9 +8,10 @@ KHS Anda untuk **Semester {{ $submission->semester }}** telah diverifikasi oleh 
 **Detail:**
 - Semester: {{ $submission->semester }}
 - IPS: {{ $submission->ips }}
+- IPK Terakhir: {{ $submission->ipk }}
 - Status: Terverifikasi ✅
 
-<x-mail::button :url="url('/khs')">
+<x-mail::button :url="url('/dashboard')">
 Lihat Detail
 </x-mail::button>
 

@@ -24,6 +24,9 @@
 *.swp
 *.swo
 
+# ─── Testing ────────────────────────────────────────────────────────────────
+/docs/testing
+
 # ─── OS ───────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
@@ -43,6 +46,7 @@ MANUAL_ADMIN.md
 # Panduan developer & deploy
 DEVELOPER_GUIDE.md
 DEPLOYMENT_GUIDE.md
+acz.md
 
 # ─── Misc ─────────────────────────────────────────────────────────────────────
 *.zip

@@ -120,6 +120,9 @@
                                 <li>
                                     <a class="dropdown-item" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('settings') }}"><i class="bi bi-gear me-2"></i>Pengaturan</a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 @elseif(auth()->user()->isAdmin())
                                 <li>

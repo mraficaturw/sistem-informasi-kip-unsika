@@ -15,6 +15,7 @@ return new class extends Migration
                   ->cascadeOnDelete();
             $table->unsignedTinyInteger('semester');
             $table->decimal('ips', 3, 2);
+            $table->decimal('ipk', 3, 2);
             $table->string('khs_file');
             $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
             $table->text('admin_notes')->nullable();

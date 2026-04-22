@@ -26,12 +26,14 @@ class DashboardController extends Controller
         // KHS terbaru adalah elemen pertama dari koleksi (sudah diurutkan)
         $latestKhs = $khsHistory->first();
 
-        // ── 3. Informasi semester dan IPS terakhir ─────────────────────────
+        // ── 3. Informasi semester, IPS, dan IPK terakhir ────────────────
         $currentSemester = $latestKhs ? 'Semester ' . $latestKhs->semester : '-';
         $latestIps       = $latestKhs ? number_format($latestKhs->ips, 2) : '-';
+        $latestIpk       = $latestKhs ? number_format($latestKhs->ipk, 2) : '-';
 
-        // ── 4. Tentukan pesan dan warna alert IPS berdasarkan nilainya ─────
+        // ── 4. Tentukan pesan dan warna alert IPS & IPK berdasarkan nilainya ─
         [$ipsAlertMessage, $ipsAlertColor] = $this->resolveIpsAlert($latestKhs);
+        [$ipkAlertMessage, $ipkAlertColor] = $this->resolveIpkAlert($latestKhs);
 
         // ── 5. Cari KHS yang diajukan pada periode form pendataan saat ini ─
         // Gunakan koleksi yang sudah diambil — tidak perlu query tambahan ke DB
@@ -58,8 +60,11 @@ class DashboardController extends Controller
         return view('student.dashboard', compact(
             'currentSemester',
             'latestIps',
+            'latestIpk',
             'ipsAlertMessage',
             'ipsAlertColor',
+            'ipkAlertMessage',
+            'ipkAlertColor',
             'currentPeriodStatus',
             'currentPeriodStatusColor',
             'currentPeriodStatusIcon',
@@ -123,5 +128,33 @@ class DashboardController extends Controller
             'rejected' => ['Ditolak',             'danger',           'bi-x-circle'],
             default    => ['Menunggu Validasi',   'warning text-dark', 'bi-hourglass-split'],
         };
+    }
+
+    /**
+     * Tentukan pesan dan warna alert berdasarkan nilai IPK terakhir mahasiswa.
+     * Mengembalikan array [pesan, warna_css].
+     *
+     * Aturan sama dengan IPS:
+     *  - IPK < 3.00  → danger  (perlu perhatian serius)
+     *  - IPK 3.00–3.49 → warning (masih bisa ditingkatkan)
+     *  - IPK >= 3.50 → success (pertahankan prestasi)
+     */
+    private function resolveIpkAlert(?object $latestKhs): array
+    {
+        if (! $latestKhs) {
+            return ['', 'success'];
+        }
+
+        $ipk = (float) $latestKhs->ipk;
+
+        if ($ipk < 3.00) {
+            return ['Perlu ditingkatkan', 'danger'];
+        }
+
+        if ($ipk < 3.50) {
+            return ['Lebih baik ditingkatkan', 'warning text-dark'];
+        }
+
+        return ['Good Job, Pertahankan!', 'success'];
     }
 }

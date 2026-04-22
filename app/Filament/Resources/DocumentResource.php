@@ -32,7 +32,13 @@ class DocumentResource extends Resource
                     ->label('Nama Dokumen')
                     ->required()
                     ->maxLength(255)
-                    ->placeholder('Contoh: SK Penerima KIP Semester Genap 2025'),
+                    ->placeholder('Contoh: SK Penerima KIP Kuliah UNSIKA - Angkatan 2022'),
+                FormComponents\TextInput::make('angkatan')
+                    ->label('Angkatan')
+                    ->placeholder('Contoh: 2022')
+                    ->maxLength(4)
+                    ->numeric()
+                    ->helperText('Tahun angkatan mahasiswa penerima SK ini. Kosongkan jika berlaku umum.'),
                 FormComponents\FileUpload::make('file')
                     ->label('File Dokumen (PDF)')
                     ->required()
@@ -49,6 +55,7 @@ class DocumentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Nama Dokumen')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('angkatan')->label('Angkatan')->badge()->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Tanggal Upload')->dateTime('d M Y')->sortable(),
             ])
             ->recordActions([

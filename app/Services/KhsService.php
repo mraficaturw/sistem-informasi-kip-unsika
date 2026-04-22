@@ -56,10 +56,11 @@ class KhsService
      * @param  int          $userId    ID mahasiswa yang mengajukan
      * @param  int          $semester  Nomor semester
      * @param  float        $ips       Indeks Prestasi Semester
+     * @param  float        $ipk       Indeks Prestasi Kumulatif
      * @param  UploadedFile $file      File PDF KHS yang diupload
      * @param  string       $period    Periode form pendataan aktif
      */
-    public function store(int $userId, int $semester, float $ips, UploadedFile $file, string $period): KhsSubmission
+    public function store(int $userId, int $semester, float $ips, float $ipk, UploadedFile $file, string $period): KhsSubmission
     {
         // Simpan file PDF ke storage/app/public/khs
         $path = $file->store('khs', 'public');
@@ -69,6 +70,7 @@ class KhsService
             'user_id'      => $userId,
             'semester'     => $semester,
             'ips'          => $ips,
+            'ipk'          => $ipk,
             'khs_file'     => $path,
             'form_period'  => $period,
             'status'       => 'pending',

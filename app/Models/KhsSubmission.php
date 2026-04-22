@@ -15,6 +15,7 @@ class KhsSubmission extends Model
         'user_id',
         'semester',
         'ips',
+        'ipk',
         'khs_file',
         'status',
         'admin_notes',
@@ -26,6 +27,7 @@ class KhsSubmission extends Model
     {
         return [
             'ips'          => 'decimal:2',
+            'ipk'          => 'decimal:2',
             'submitted_at' => 'datetime',
             'semester'     => 'integer',
         ];

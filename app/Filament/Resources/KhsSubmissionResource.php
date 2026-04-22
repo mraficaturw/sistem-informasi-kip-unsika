@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\KhsVerifiedMail;
+use App\Mail\KhsRejectedMail;
 use BackedEnum;
 use UnitEnum;
 
@@ -57,6 +60,13 @@ class KhsSubmissionResource extends Resource
                     ->step(0.01)
                     ->minValue(0)
                     ->maxValue(4),
+                FormComponents\TextInput::make('ipk')
+                    ->label('IPK Terakhir')
+                    ->numeric()
+                    ->required()
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(4),
                 FormComponents\Select::make('status')
                     ->label('Status')
                     ->options([
@@ -97,6 +107,9 @@ class KhsSubmissionResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ips')
                     ->label('IPS')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('ipk')
+                    ->label('IPK')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')->badge()
                     ->label('Status')
@@ -153,6 +166,11 @@ class KhsSubmissionResource extends Resource
                             'khs_next_resubmit_at' => null,
                         ]);
 
+                        // Kirim email notifikasi jika mahasiswa opt-in
+                        if ($record->user->email_opt_in) {
+                            Mail::to($record->user->email)->queue(new KhsVerifiedMail($record));
+                        }
+
                         Notification::make()->title('KHS disetujui.')->success()->send();
                     }),
 
@@ -179,6 +197,11 @@ class KhsSubmissionResource extends Resource
                         $record->user->update([
                             'khs_next_resubmit_at' => now()->addMinutes(15),
                         ]);
+
+                        // Kirim email notifikasi penolakan jika mahasiswa opt-in
+                        if ($record->user->email_opt_in) {
+                            Mail::to($record->user->email)->queue(new KhsRejectedMail($record));
+                        }
 
                         Notification::make()->title('KHS ditolak.')->warning()->send();
                     }),

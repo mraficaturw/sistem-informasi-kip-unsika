@@ -96,35 +96,17 @@
         <div class="row align-items-center">
             <div class="col-lg-5 mb-4 mb-lg-0">
                 <span class="section-label">Informasi</span>
-                <h2 class="section-title">Persyaratan Pemegang KIP Kuliah</h2>
-                <p class="text-muted mb-4">Setiap penerima KIP Kuliah wajib memenuhi persyaratan berikut untuk mempertahankan status beasiswa dan mendapatkan pencairan dana tepat waktu.</p>
+                <h2 class="section-title">Persyaratan & Ketentuan KIP Kuliah</h2>
+                <p class="text-muted mb-4">Setiap penerima KIP Kuliah wajib memenuhi ketentuan berikut selama masa studi berlangsung. Pelanggaran terhadap ketentuan ini dapat mengakibatkan pencabutan beasiswa.</p>
             </div>
             <div class="col-lg-7">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="persyaratan-item">
-                            <div class="persyaratan-icon"><i class="bi bi-journal-check"></i></div>
-                            <div>
-                                <h6>Upload KHS Setiap Semester</h6>
-                                <p>Wajib mengunggah KHS dalam format PDF melalui sistem setiap semester berjalan.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="persyaratan-item">
                             <div class="persyaratan-icon"><i class="bi bi-graph-up-arrow"></i></div>
                             <div>
-                                <h6>IPS Minimum</h6>
-                                <p>Mempertahankan Indeks Prestasi Semester (IPS) sesuai ketentuan yang berlaku.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="persyaratan-item">
-                            <div class="persyaratan-icon"><i class="bi bi-clock-history"></i></div>
-                            <div>
-                                <h6>Tepat Waktu</h6>
-                                <p>Mengumpulkan dokumen dan data sebelum batas waktu yang ditentukan admin.</p>
+                                <h6>IPK Minimal 3,00</h6>
+                                <p>Wajib mempertahankan Indeks Prestasi Kumulatif (IPK) minimal 3,00 di setiap semester perkuliahan.</p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +115,16 @@
                             <div class="persyaratan-icon"><i class="bi bi-person-check"></i></div>
                             <div>
                                 <h6>Status Mahasiswa Aktif</h6>
-                                <p>Harus terdaftar sebagai mahasiswa aktif di Universitas Singaperbangsa Karawang.</p>
+                                <p>Harus terdaftar sebagai mahasiswa aktif dan belum menikah selama menerima beasiswa KIP Kuliah.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="persyaratan-item">
+                            <div class="persyaratan-icon"><i class="bi bi-clock-history"></i></div>
+                            <div>
+                                <h6>Batas Masa Studi</h6>
+                                <p>Beasiswa berlaku maksimal 8 semester untuk program D4/S1 dan 6 semester untuk program D3.</p>
                             </div>
                         </div>
                     </div>
@@ -141,17 +132,8 @@
                         <div class="persyaratan-item">
                             <div class="persyaratan-icon"><i class="bi bi-shield-check"></i></div>
                             <div>
-                                <h6>Tidak Melanggar Aturan</h6>
-                                <p>Tidak pernah melakukan pelanggaran akademik atau non-akademik yang berat.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="persyaratan-item">
-                            <div class="persyaratan-icon"><i class="bi bi-envelope-check"></i></div>
-                            <div>
-                                <h6>Email Resmi</h6>
-                                <p>Registrasi hanya menggunakan email @student.unsika.ac.id.</p>
+                                <h6>Mematuhi Norma & Hukum</h6>
+                                <p>Tidak terlibat dalam tindakan yang melanggar etika, peraturan kampus, maupun hukum yang berlaku.</p>
                             </div>
                         </div>
                     </div>
@@ -337,6 +319,11 @@
                         <div class="form-text">Masukkan IPS semester ini (0.00 - 4.00)</div>
                     </div>
                     <div class="mb-3">
+                        <label for="ipk" class="form-label">IPK Terakhir (Indeks Prestasi Kumulatif)</label>
+                        <input type="number" class="form-control" id="ipk" name="ipk" step="0.01" min="0" max="4.00" placeholder="Contoh: 3.45" required>
+                        <div class="form-text">Masukkan IPK terakhir Anda (0.00 - 4.00)</div>
+                    </div>
+                    <div class="mb-3">
                         <label for="khs_file" class="form-label">Upload File KHS (PDF)</label>
                         <input type="file" class="form-control" id="khs_file" name="khs_file" accept=".pdf" required>
                         <div class="form-text">Format file: PDF, maksimal 2MB</div>
@@ -360,27 +347,30 @@
         <div class="text-center mb-5">
             <span class="section-label justify-content-center">Dokumen</span>
             <h2 class="section-title">Unduh SK Penerima KIP</h2>
-            <p class="section-subtitle mx-auto">Unduh dokumen Surat Keputusan (SK) Penerima KIP Kuliah yang berlaku saat ini.</p>
+            <p class="section-subtitle mx-auto">Unduh dokumen Surat Keputusan (SK) Penerima KIP Kuliah sesuai angkatan Anda.</p>
         </div>
 
         <div class="row justify-content-center">
-            @if(isset($latestDocument) && $latestDocument)
-            <div class="col-md-6 col-lg-4">
-                <div class="sk-card card h-100 text-center p-4">
+            <div class="col-md-6 col-lg-5">
+                <div class="sk-card card text-center p-4">
                     <div class="card-body">
                         <div class="sk-icon mx-auto mb-3">
                             <i class="bi bi-file-earmark-pdf-fill"></i>
                         </div>
-                        <h5 class="fw-bold">{{ $latestDocument->name }}</h5>
-                        <p class="text-muted small mb-3">
-                            <i class="bi bi-calendar3 me-1"></i>Diupload {{ $latestDocument->created_at->format('d M Y') }}
-                        </p>
+                        <h5 class="fw-bold">SK Penerima KIP Kuliah</h5>
+                        <p class="text-muted small mb-3">Pilih dokumen SK sesuai angkatan Anda</p>
                         <div>
                             @auth
                                 @if(auth()->user()->isApproved())
-                                <a href="{{ asset('storage/' . $latestDocument->file) }}" class="btn btn-danger btn-sm px-4" download="{{ $latestDocument->name . '.' . pathinfo($latestDocument->file, PATHINFO_EXTENSION) }}">
-                                    <i class="bi bi-download me-1"></i>Unduh SK
-                                </a>
+                                    @if(isset($skDocuments) && $skDocuments->count() > 0)
+                                    <button type="button" class="btn btn-danger btn-sm px-4" data-bs-toggle="modal" data-bs-target="#modalPilihSK" id="btnUnduhSK">
+                                        <i class="bi bi-download me-1"></i>Unduh SK
+                                    </button>
+                                    @else
+                                    <button type="button" class="btn btn-outline-secondary btn-sm px-4" disabled>
+                                        <i class="bi bi-file-earmark-x me-1"></i>Belum Ada Dokumen
+                                    </button>
+                                    @endif
                                 @else
                                 <button type="button" class="btn btn-outline-secondary btn-sm px-4" disabled>
                                     <i class="bi bi-shield-lock me-1"></i>Akun Belum Disetujui
@@ -395,22 +385,76 @@
                     </div>
                 </div>
             </div>
-            @else
-            <div class="col-md-6">
-                <div class="sk-card card text-center p-4">
-                    <div class="card-body">
-                        <div class="sk-icon mx-auto mb-3">
-                            <i class="bi bi-file-earmark-x"></i>
-                        </div>
-                        <h5 class="fw-bold text-muted">Belum Ada Dokumen SK</h5>
-                        <p class="text-muted small">Dokumen SK akan tersedia setelah diunggah oleh admin.</p>
-                    </div>
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </section>
+
+{{-- Modal Pilih SK per Angkatan --}}
+@auth
+@if(auth()->user()->isApproved() && isset($skDocuments) && $skDocuments->count() > 0)
+<div class="modal fade" id="modalPilihSK" tabindex="-1" aria-labelledby="modalPilihSKLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPilihSKLabel">
+                    <i class="bi bi-file-earmark-pdf me-2"></i>Pilih SK Penerima KIP
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{-- Peringatan Sanksi --}}
+                <div class="alert alert-warning d-flex align-items-start mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 mt-1 flex-shrink-0"></i>
+                    <div class="small">
+                        <strong>Peringatan:</strong> Dokumen SK ini bersifat resmi dan rahasia. Penyalahgunaan dokumen akan dikenakan <strong>sanksi sesuai peraturan</strong> yang berlaku di Universitas Singaperbangsa Karawang.
+                    </div>
+                </div>
+
+                {{-- List Dokumen SK --}}
+                <div class="list-group list-group-flush">
+                    @foreach($skDocuments as $doc)
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                        <div>
+                            <div class="fw-semibold" style="font-size: 0.9rem;">{{ $doc->name }}</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">
+                                @if($doc->angkatan)
+                                <span class="badge bg-danger bg-opacity-10 text-danger me-1">Angkatan {{ $doc->angkatan }}</span>
+                                @endif
+                                <i class="bi bi-calendar3 me-1"></i>{{ $doc->created_at->format('d M Y') }}
+                            </div>
+                        </div>
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm btn-download-sk"
+                                data-file-url="{{ asset('storage/' . $doc->file) }}"
+                                data-file-name="{{ $doc->name . '.' . pathinfo($doc->file, PATHINFO_EXTENSION) }}">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal File Tidak Tersedia --}}
+<div class="modal fade" id="modalSkTidakTersedia" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content text-center p-4">
+            <div class="mb-3">
+                <i class="bi bi-file-earmark-x text-danger" style="font-size: 3rem;"></i>
+            </div>
+            <h6 class="fw-bold mb-2">File SK Tidak Tersedia</h6>
+            <p class="text-muted small mb-3">File dokumen SK belum diunggah oleh admin. Silakan coba lagi nanti.</p>
+            <button type="button" class="btn btn-outline-danger btn-sm w-100" data-bs-dismiss="modal">Tutup</button>
+        </div>
+    </div>
+</div>
+@endif
+@endauth
 
 {{-- 8. FAQ --}}
 <section class="faq-section" id="faq">
@@ -532,8 +576,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Apakah Anda yakin data IPS dan dokumen KHS yang diunggah sudah benar?</p>
-                                    <p class="text-muted small mb-0">Pastikan file dapat terbaca dengan jelas dan IPS sesuai dengan KHS.</p>
+                                    <p>Apakah Anda yakin data IPS, IPK, dan dokumen KHS yang diunggah sudah benar?</p>
+                                    <p class="text-muted small mb-0">Pastikan file dapat terbaca dengan jelas dan IPS serta IPK sesuai dengan KHS.</p>
                                 </div>
                                 <div class="modal-footer border-0 pt-0">
                                     <button type="button" class="btn btn-secondary w-100 mb-2 py-2" id="btnConfirmSubmit">Yakin, Kirim</button>
@@ -589,6 +633,44 @@ document.addEventListener('DOMContentLoaded', function() {
             timerElement.innerHTML = displayTime;
         }, 1000);
     }
+    // 4. SK Download — cek ketersediaan file sebelum unduh
+    document.querySelectorAll('.btn-download-sk').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const fileUrl = this.dataset.fileUrl;
+            const fileName = this.dataset.fileName;
+            const btnEl = this;
+
+            // Disable tombol sementara
+            btnEl.disabled = true;
+            btnEl.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+
+            fetch(fileUrl, { method: 'HEAD' })
+                .then(function(response) {
+                    if (response.ok) {
+                        // File tersedia — trigger download
+                        const a = document.createElement('a');
+                        a.href = fileUrl;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    } else {
+                        // File tidak tersedia — tampilkan modal
+                        const errorModal = new bootstrap.Modal(document.getElementById('modalSkTidakTersedia'));
+                        errorModal.show();
+                    }
+                })
+                .catch(function() {
+                    // Network error / file tidak tersedia
+                    const errorModal = new bootstrap.Modal(document.getElementById('modalSkTidakTersedia'));
+                    errorModal.show();
+                })
+                .finally(function() {
+                    btnEl.disabled = false;
+                    btnEl.innerHTML = '<i class="bi bi-download"></i>';
+                });
+        });
+    });
 });
 </script>
 @endpush

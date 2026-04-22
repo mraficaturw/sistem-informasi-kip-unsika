@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Mail\AccountApprovedMail;
+use App\Mail\AccountRejectedMail;
 use App\Models\User;
 use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Components as SchemaComponents;
@@ -177,6 +178,12 @@ class StudentResource extends Resource
                     ->modalHeading('Tolak Mahasiswa?')
                     ->action(function (User $record) {
                         $record->update(['status' => 'rejected']);
+
+                        // Kirim email notifikasi penolakan jika mahasiswa opt-in
+                        if ($record->email_opt_in) {
+                            Mail::to($record->email)->queue(new AccountRejectedMail($record));
+                        }
+
                         Notification::make()
                             ->title('Mahasiswa ditolak.')
                             ->warning()

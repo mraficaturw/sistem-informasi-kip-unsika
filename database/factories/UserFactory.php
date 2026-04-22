@@ -26,6 +26,13 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'npm' => fake()->unique()->numerify('##########'),
+            'faculty' => 'Fakultas Ilmu Komputer',
+            'study_program' => 'Informatika',
+            'cohort' => '2023',
+            'role' => 'student',
+            'status' => 'approved',
+            'email_opt_in' => true,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -39,6 +46,47 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * State: mahasiswa pending (belum disetujui admin).
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'pending',
+        ]);
+    }
+
+    /**
+     * State: mahasiswa ditolak.
+     */
+    public function rejected(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'rejected',
+        ]);
+    }
+
+    /**
+     * State: email opt-in dinonaktifkan.
+     */
+    public function emailOptOut(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_opt_in' => false,
+        ]);
+    }
+
+    /**
+     * State: admin user.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+            'status' => 'approved',
         ]);
     }
 }
