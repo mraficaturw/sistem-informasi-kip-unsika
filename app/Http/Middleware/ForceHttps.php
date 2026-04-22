@@ -27,8 +27,16 @@ class ForceHttps
             // Paksa URL yang dihasilkan oleh Laravel (url(), route(), dll) memakai HTTPS
             \Illuminate\Support\Facades\URL::forceScheme('https');
 
-            // Jika request masuk via HTTP, redirect ke HTTPS
-            if (! $request->isSecure()) {
+            // Vercel (dan reverse proxy lain) meneruskan request via HTTP internal
+            // meskipun klien terhubung via HTTPS. Header X-Forwarded-Proto memberi tahu
+            // skema asli dari klien. isSecure() sudah memperhitungkan header ini
+            // karena trustProxies('*') diaktifkan di bootstrap/app.php.
+            // Jika keduanya HTTP (benar-benar tidak aman), baru redirect ke HTTPS.
+            $isHttps = $request->isSecure()
+                || $request->header('X-Forwarded-Proto') === 'https'
+                || $request->header('X-Forwarded-SSL') === 'on';
+
+            if (! $isHttps) {
                 return redirect()->secure($request->getRequestUri(), 301);
             }
         }
