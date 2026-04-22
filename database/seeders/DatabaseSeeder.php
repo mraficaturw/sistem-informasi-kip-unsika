@@ -31,35 +31,37 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        // ─── Approved Students ──────────────────────────────────
+        // ─── Approved Students (10 akun — simulasi mahasiswa baru di-approve) ──
+        // Semua belum consent email (null), belum isi KHS, kondisi fresh.
         $students = [
-            ['npm' => '2210631170086', 'name' => 'Rafi Catur', 'email' => '2210631170086@student.unsika.ac.id', 'password' => 'Raficatur2004', 'faculty' => 'FASILKOM', 'study_program' => 'Informatika', 'cohort' => '2022'],
-            ['npm' => '2210631170001', 'name' => 'Siti Nurhaliza', 'email' => '2210631170001@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'FASILKOM', 'study_program' => 'Sistem Informasi', 'cohort' => '2022'],
-            ['npm' => '2110631040012', 'name' => 'Budi Santoso', 'email' => '2110631040012@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Teknik', 'study_program' => 'Teknik Mesin', 'cohort' => '2021'],
-            ['npm' => '2310631060023', 'name' => 'Dewi Lestari', 'email' => '2310631060023@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Ekonomi dan Bisnis', 'study_program' => 'Akuntansi', 'cohort' => '2023'],
-            ['npm' => '2310631020034', 'name' => 'Rizky Pratama', 'email' => '2310631020034@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'FKIP', 'study_program' => 'Pendidikan Bahasa Inggris', 'cohort' => '2023'],
-            ['npm' => '2210631080045', 'name' => 'Putri Ayu Rahmawati', 'email' => '2210631080045@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Ilmu Kesehatan', 'study_program' => 'Farmasi', 'cohort' => '2022'],
-            ['npm' => '2210631010056', 'name' => 'Muhammad Arif', 'email' => '2210631010056@student.unsika.ac.id', 'password' => 'Password1', 'faculty' => 'Fakultas Hukum', 'study_program' => 'Ilmu Hukum', 'cohort' => '2022'],
+            ['npm' => '2210631170086', 'name' => 'Rafi Catur',              'email' => '2210631170086@student.unsika.ac.id', 'password' => 'Raficatur2004', 'faculty' => 'FASILKOM',                        'study_program' => 'Informatika',               'cohort' => '2022'],
+            ['npm' => '2210631170001', 'name' => 'Siti Nurhaliza',          'email' => '2210631170001@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'FASILKOM',                        'study_program' => 'Sistem Informasi',          'cohort' => '2022'],
+            ['npm' => '2110631040012', 'name' => 'Budi Santoso',            'email' => '2110631040012@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Teknik',                 'study_program' => 'Teknik Mesin',              'cohort' => '2021'],
+            ['npm' => '2310631060023', 'name' => 'Dewi Lestari',            'email' => '2310631060023@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Ekonomi dan Bisnis',      'study_program' => 'Akuntansi',                 'cohort' => '2023'],
+            ['npm' => '2310631020034', 'name' => 'Rizky Pratama',           'email' => '2310631020034@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'FKIP',                            'study_program' => 'Pendidikan Bahasa Inggris', 'cohort' => '2023'],
+            ['npm' => '2210631080045', 'name' => 'Putri Ayu Rahmawati',     'email' => '2210631080045@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Ilmu Kesehatan',          'study_program' => 'Farmasi',                   'cohort' => '2022'],
+            ['npm' => '2210631010056', 'name' => 'Muhammad Arif',           'email' => '2210631010056@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Hukum',                  'study_program' => 'Ilmu Hukum',                'cohort' => '2022'],
+            ['npm' => '2310631050067', 'name' => 'Anisa Fitriani',          'email' => '2310631050067@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Ilmu Sosial dan Politik', 'study_program' => 'Ilmu Pemerintahan',         'cohort' => '2023'],
+            ['npm' => '2410631170078', 'name' => 'Fajar Dwi Nugroho',       'email' => '2410631170078@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'FASILKOM',                        'study_program' => 'Informatika',               'cohort' => '2024'],
+            ['npm' => '2210631030089', 'name' => 'Mega Permatasari',        'email' => '2210631030089@student.unsika.ac.id', 'password' => 'Password1',     'faculty' => 'Fakultas Pertanian',              'study_program' => 'Agroteknologi',             'cohort' => '2022'],
         ];
 
-        foreach ($students as $index => $data) {
+        foreach ($students as $data) {
             $student = User::create([
-                'npm' => $data['npm'],
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role' => 'student',
-                'status' => 'approved',
-                'faculty' => $data['faculty'],
+                'npm'           => $data['npm'],
+                'name'          => $data['name'],
+                'email'         => $data['email'],
+                'password'      => Hash::make($data['password']),
+                'role'          => 'student',
+                'status'        => 'approved',
+                'faculty'       => $data['faculty'],
                 'study_program' => $data['study_program'],
-                'cohort' => $data['cohort'],
-                // Variasi consent: ganjil opt-in, genap opt-out (untuk testing)
-                'email_opt_in' => $index % 2 === 0,
+                'cohort'        => $data['cohort'],
             ]);
             $student->assignRole('student');
         }
 
-        // Pending student
+        // Pending student (menunggu approval admin)
         $pending = User::create([
             'npm' => '2410631170099', 'name' => 'Rina Novita', 'email' => '2410631170099@student.unsika.ac.id',
             'password' => Hash::make('Password1'), 'role' => 'student', 'status' => 'pending',
@@ -67,7 +69,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $pending->assignRole('student');
 
-        // Rejected student
+        // Rejected student (ditolak admin)
         $rejected = User::create([
             'npm' => '2410631060088', 'name' => 'Dimas Kurniawan', 'email' => '2410631060088@student.unsika.ac.id',
             'password' => Hash::make('Password1'), 'role' => 'student', 'status' => 'rejected',
@@ -137,88 +139,8 @@ class DatabaseSeeder extends Seeder
             Faq::create(array_merge($faq, ['is_active' => true]));
         }
 
-        // ─── Sample KHS Submissions ─────────────────────────────
-        $mainStudent = User::where('npm', '2210631170086')->first();
-        if ($mainStudent) {
-            KhsSubmission::create([
-                'user_id' => $mainStudent->id,
-                'semester' => 5,
-                'ips' => 3.65,
-                'ipk' => 3.60,
-                'khs_file' => 'khs/sample-khs-5.pdf',
-                'status' => 'verified',
-                'form_period' => 'Ganjil 2025/2026',
-                'submitted_at' => '2025-09-15 10:30:00',
-            ]);
-            KhsSubmission::create([
-                'user_id' => $mainStudent->id,
-                'semester' => 6,
-                'ips' => 3.70,
-                'ipk' => 3.62,
-                'khs_file' => 'khs/sample-khs-6.pdf',
-                'status' => 'pending',
-                'form_period' => 'Genap 2025/2026',
-                'submitted_at' => '2026-03-07 08:00:00',
-            ]);
-        }
-
-        $student2 = User::where('npm', '2210631170001')->first();
-        if ($student2) {
-            KhsSubmission::create([
-                'user_id' => $student2->id,
-                'semester' => 5,
-                'ips' => 3.45,
-                'ipk' => 3.40,
-                'khs_file' => 'khs/sample-khs-siti.pdf',
-                'status' => 'verified',
-                'form_period' => 'Ganjil 2025/2026',
-                'submitted_at' => '2025-09-14 09:00:00',
-            ]);
-        }
-
-        $student3 = User::where('npm', '2110631040012')->first();
-        if ($student3) {
-            KhsSubmission::create([
-                'user_id' => $student3->id,
-                'semester' => 7,
-                'ips' => 3.20,
-                'ipk' => 2.85,
-                'khs_file' => 'khs/sample-khs-budi.pdf',
-                'status' => 'rejected',
-                'admin_notes' => 'File KHS tidak terbaca, harap upload ulang dengan file yang lebih jelas.',
-                'form_period' => 'Genap 2025/2026',
-                'submitted_at' => '2026-03-06 14:20:00',
-            ]);
-        }
-
-        // Dewi — IPK tinggi, disetujui (kondisi ideal)
-        $student4 = User::where('npm', '2310631060023')->first();
-        if ($student4) {
-            KhsSubmission::create([
-                'user_id' => $student4->id,
-                'semester' => 3,
-                'ips' => 3.80,
-                'ipk' => 3.75,
-                'khs_file' => 'khs/sample-khs-dewi.pdf',
-                'status' => 'verified',
-                'form_period' => 'Ganjil 2025/2026',
-                'submitted_at' => '2025-09-16 11:00:00',
-            ]);
-        }
-
-        // Rizky — IPS & IPK rendah, pending (kondisi warning)
-        $student5 = User::where('npm', '2310631020034')->first();
-        if ($student5) {
-            KhsSubmission::create([
-                'user_id' => $student5->id,
-                'semester' => 3,
-                'ips' => 2.90,
-                'ipk' => 2.95,
-                'khs_file' => 'khs/sample-khs-rizky.pdf',
-                'status' => 'pending',
-                'form_period' => 'Genap 2025/2026',
-                'submitted_at' => '2026-03-08 09:30:00',
-            ]);
-        }
+        // ─── KHS Submissions ─────────────────────────────────────
+        // 10 mahasiswa di atas seolah baru di-approve, jadi belum ada
+        // KHS, belum consent email, dan tidak dalam cooldown.
     }
 }

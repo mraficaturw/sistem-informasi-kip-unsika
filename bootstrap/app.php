@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // ── Trust proxies (wajib untuk Vercel / reverse proxy) ────────────────
+        // Vercel menjalankan app di balik proxy — tanpa ini, HTTPS detection
+        // dan URL generation tidak akan bekerja dengan benar.
+        $middleware->trustProxies(at: '*');
+
         // ── Global middleware: berjalan di SETIAP request ─────────────────────
         // ForceHttps: redirect HTTP → HTTPS di production (tidak aktif di lokal)
         // SecurityHeaders: tambahkan security headers ke semua response

@@ -1,0 +1,37 @@
+# ─── Dependencies (diinstall saat build) ────────────────────────────────────
+/vendor
+/node_modules
+
+# ─── Environment files ──────────────────────────────────────────────────────
+.env
+.env.backup
+.env.production
+.env.local
+.env.*.local
+
+# ─── Git & IDE ──────────────────────────────────────────────────────────────
+.git
+.gitattributes
+.gitignore
+/.idea
+/.vscode
+/.fleet
+/.nova
+/.zed
+
+# ─── Testing ────────────────────────────────────────────────────────────────
+/tests
+phpunit.xml
+.phpunit.result.cache
+/.phpunit.cache
+/docs/testing
+
+# ─── Storage (logs, cache — tidak relevan di serverless) ────────────────────
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+
+# ─── Dokumentasi ────────────────────────────────────────────────────────────
+*.md
+Analisis_KIP_Unsika.html
